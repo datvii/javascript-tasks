@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Tile</title>
+	<style>
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	body, html {
+		box-sizing: border-box;
+		color: #000;
+		font: normal 20px/1.5em fantasy, sans-serif;
+		padding: 0;
+		margin: 0;
+		transition: background 1s ease;
+		min-height: 100%;
+		position: relative;
+		overflow-x: hidden;
+	}
+	body {
+		background: #fff url('http://www.1zoom.net/big2/302/317862-Sepik.jpg') no-repeat 0/cover;
+		padding: 50px 0;
+	}
+	.changeBg {
+		background: url('https://img.purch.com/h/1000/aHR0cDovL3d3dy5saXZlc2NpZW5jZS5jb20vaW1hZ2VzL2kvMDAwLzA5NC8wNTIvb3JpZ2luYWwvY2l0cnVzLXNodXR0ZXJzdG9jay5qcGc=') no-repeat 0/cover;
+	}
+	.clearfix:after {
+		display: table;
+		content: '';
+		clear: both;
+	}
+	.tiles__wrap {
+		position: relative;
+	}
+	.tile {
+		display: block;
+		max-width: 700px;
+		margin: 0 auto;
+		width: 100%;
+		border: 2px solid violet;
+		padding: 10px;
+		background: rgba(254, 137, 172, .6);
+	}
+	.tile h1 {
+		margin: 15px;
+		text-shadow: 2px 1px 1px #5fbe00;
+	}
+	.tile > div {
+		display: block;
+		text-align: center;
+		margin: 0 auto;
+	}
+	.one__tile {
+		display: inline-block;
+		vertical-align: middle;
+		position: relative;
+		margin: 2px;
+		cursor: pointer;
+		transition: all .5s ease;
+	}
+	.one__tile:hover .hidden__tile {
+		background: orange!important;		
+	}
+	.one__tile[aria-hidden = 'true'] .hidden__tile {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		background: #73fc82;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		border: 1px solid #fdd135;
+	}
+	.one__tile.guessed {
+		background: #000;
+		z-index: -1;
+	}
+	.one__tile img {
+		max-width: 100%;
+		display: inline-block;
+		padding: 0;
+		margin: 0;
+		cursor: pointer;
+		vertical-align: middle;
+	}
+	.refresh__btn {
+		position: absolute;
+		right: 10px;
+		top: 0;
+		background: #fcf15a;
+		color: #ed557f;
+		padding: 5px 20px;
+		text-decoration: none;
+		border: 1px solid;
+		-webkit-transition:  all .3s ease;
+		   -moz-transition:  all .3s ease;
+		    -ms-transition:  all .3s ease;
+		     -o-transition:  all .3s ease;
+		        transition:  all .3s ease;
+	}
+	.refresh__btn:hover {
+		background: #f25f8f;
+		color: #fcf15a;
+	}
+	.winner {
+		position: absolute;
+		top: 50%;
+		right: 0;
+		left: 0;
+		display: none;
+		-webkit-transform: translate(0, -50%);
+		   -moz-transform: translate(0, -50%);
+		    -ms-transform: translate(0, -50%);
+		     -o-transform: translate(0, -50%);
+		        transform: translate(0, -50%);
+		text-align: center;
+		font-size: 50px;
+		color: #00ff68;
+	}
+</style>
+</head>
+<body>
+
+	<div class="tile">
+		<div class="tiles__wrap clearfix">
+			<h1>Tile</h1>
+			<!-- js -->
+			<a href="#" class="refresh__btn">Refresh</a>
+		</div>
+		<p class="winner">You are winner!</p>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script>
+		$(function() {
+			setInterval(function() {
+				$('body').toggleClass('changeBg');
+			}, 7000);
+
+			var doc = document,
+				gameArea = doc.querySelector('.tiles__wrap');
+				oneTile = gameArea.querySelectorAll('.one__tile');
+
+			function tile() {};
+
+			tile.prototype.getImages = function() {
+				// var http = new XMLHttpRequest();
+				// var params = {};
+				// var url = 'https://kde.link/test/get_field_size.php';
+				// http.open('POST', url, true);
+				// http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+				// http.onreadystatechange= function() {
+				// 	if (http.readyState == 4 && http.status == 200) {
+				// 		console.log(http.responseText);
+				// 	}
+				// }
+
+				// http.send(params);
+				$.ajax({
+					type:'POST',
+					dataType:'json',
+					url: 'https://kde.link/test/get_field_size.php',
+					success: function(jsonData) { //get json data
+						this.render(jsonData); 
+					}.bind(this)
+				}).done(function() {
+					this.check();
+				}.bind(this));
+			}
+
+			tile.prototype.check = function() { 
+				var oneTile = doc.querySelectorAll('.one__tile'); //find the tile
+				var arrLast = []; //create an empty arr
+				for (var k = 0; k < oneTile.length; k++) {
+					oneTile[k].addEventListener('click', function(e) { //click on tile
+						e.preventDefault();
+
+						if ($(this).attr('aria-hidden') == 'false' || $(this).hasClass('guessed')) {
+							return;
+						}
+
+						console.clear();
+						
+						var img = $(this).children('img');
+						var id = img.attr('data-id');
+
+
+						if (arrLast.length == 2) {
+							arrLast = []; //length clear
+							arrLast.push(id);
+						} else { //length <= 2
+							arrLast.push(id);
+						}
+
+						if (parseInt(arrLast[0]) == parseInt(arrLast[1])) { //elems in arr are equal each other
+							$(this).attr('aria-hidden', false);
+							$('[aria-hidden = false]').addClass('guessed');
+
+							var tilesCount = oneTile.length;
+							var guessedItems = $('.one__tile.guessed').length;
+
+							if (tilesCount == guessedItems) {
+								$('.one__tile').each(function(i, self) { //hide each elems after user has won
+									var time = 200;
+
+									(function(x) {
+										setTimeout(function() {
+											$(self).animate({opacity: '0'}, time)
+										}, i * 150);
+									})(i);
+
+									$('.winner').fadeIn(time);
+								});
+							}
+
+						} else {
+							$('.one__tile').attr('aria-hidden', true);
+							$(this).attr('aria-hidden', false);
+						}
+					});
+				}
+			}
+			
+
+			tile.prototype.render = function(data) {
+				var countElem = parseInt(data.width) || 6, //Count of elems
+					countRows = parseInt(data.height) || 6, //Count of rows
+					uniqueArr = countElem * countRows / 2, //Count of unique numbers for an array
+					itemWidth = 100 / countElem - 1, //Elements size
+					item = '',
+					i,
+					j,
+					k;
+
+					console.log('size:', countElem + ' x ' + countRows);
+
+				this._createArr = function() {
+					var random,
+						arrRand = [],
+						i;
+						this.finArr; //Finished array
+
+						for (i = 0; i < uniqueArr; i++) {
+							random = Math.floor(Math.random() * 9) + 1;
+							arrRand[i] = random;
+
+							this.finArr = arrRand.reduce(function (res, current) { //Here is creating a duplicate items
+								return res.concat([current, current]);
+							}, []).sort(function() { //Shuffle array
+								return 0.5 - Math.random();
+							});
+						}
+
+					return this.finArr;
+				}
+
+				this._createArr();//get finished array
+
+				for (i = 0; i < countElem; i++) {//Count of elems
+					for (j = 0; j < countRows; j++) {//Count of rows
+						item = '<div class="one__tile" aria-hidden="true" data-v='+ this.finArr[j] +'>\
+									<p class="hidden__tile"></p>\
+									<img src="https://kde.link/test/'+ this.finArr[j] +'.png" alt="tile" class="img__tile" data-id='+ this.finArr[j] +'>\
+								</div>';
+
+						$(gameArea.children[0]).after(item); //Insert all our generated arr after "H1" title
+					}
+
+					$('.one__tile').css('width', itemWidth + '%'); //Set the width of the elems
+				}
+			}
+
+			tile.prototype.init = function() { //initialize function
+				this.getImages(); //Get the images
+				this.refreshGame(); //Refresh game
+
+			}
+
+			tile.prototype.refreshGame = function() {
+				var btn = gameArea.querySelector('.refresh__btn');
+				btn.addEventListener('click', function(e) {
+					$('p.winner').fadeOut(200); 
+					e.preventDefault();
+					$('.one__tile').remove();
+					this.getImages();
+				}.bind(this));
+			}
+
+
+			var Masson = new tile();//Create an instance of class
+			Masson.init();//Launch the initialize function
+		});
+	</script>
+</body>
+</html>
