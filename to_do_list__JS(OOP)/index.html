@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="description" content="">
+	<meta name="robots" content="noindex"> 
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+</head>
+
+<body class="ishome">
+	
+	<div class="wrapper">
+		<div class="info">
+		  <h1>To-Do Lists!</h1>
+		  <ul class="info__list">
+		  	<li>Click to red cross in right corner to delete item.</li>
+		  	<li>Click to undo button to return last item.</li>
+		  	<li>Input the characters into the field to create item.</li>
+		  	<li>Click to item to edit it.</li>
+		  </ul>
+		  
+		  <h3>Play with fields</h3> 
+		</div>
+		  
+		  <div class="gw">
+		    <div class="g one-half  small-one-whole">
+		    <article class="list  list--work">
+		      <hgroup class="gw list__header">
+		          <div class="g three-quarters">
+		            <h3>Work</h3>
+		          </div>
+		          <div class="g one-quarter">
+		            <a class="btn" href="#" data-undo="work">Undo</a>
+		          </div>
+		        </hgroup>
+		      <ul data-list="work">
+		          <li>Do stuff<span class="delete"></span></li>
+		          <li>Make Front-End magic<span class="delete"></span></li>
+		          <li>COFFEE!!11!<span class="delete"></span></li>
+		      </ul>
+		      <input type="text" data-input="work" class="input input--work" />
+		    </article>
+		  </div>  <!-- list container -->
+		    
+		    <div class="g one-half small-one-whole">
+		      <article class="list  list--private">
+		        <hgroup class="gw list__header">
+		          <div class="g three-quarters">
+		            <h3>ToDoList Script</h3>
+		          </div>
+		          <div class="g one-quarter">
+		            <a class="btn" href="#" data-undo="private">Undo</a>
+		          </div>
+		        </hgroup>
+
+		        <ul data-list="private">
+		          <li>Auto-Generate Markup<span class="delete"></span></li>
+		          <li>LocalStorage or MongoDB<span class="delete"></span></li>
+		          <li>New colors<span class="delete"></span></li>
+		          <li>Mark as done before delete<span class="delete"></span></li>
+		          <li class="todo--is-done">DRYer Code (adding Events "dynamically"?)</li>
+		          <li class="todo--is-done">Undo Function</li>
+		          <li class="todo--is-done">Delete Function</li>
+		        </ul>
+		        <input type="text" data-input="private" class="input input--private" />
+		      </article>
+		    </div> <!-- list container -->
+		 </div> <!-- gw -->
+		</div> <!-- wrapper -->
+	<link rel="stylesheet" href="app/css/main.css">
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+	<script src="app/js/main.js"></script>
+
+</body>
+</html>
